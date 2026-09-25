@@ -22,6 +22,3 @@ for scale in range (11, 17):
 
 turtle.done()
 import sys
-
-sys.path.append(r"C:\Users\PC\Desktop\apppy\.vscode")
-import test3
