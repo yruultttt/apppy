@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+   body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+   }
+    .heart-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        animation: spin 8s linear infinite;
+    }
+    .word {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-family: monospace;
+        font-size: 14px;
+        text-shadow: 0 0 8px #ff69b4, 0 0 15px #ff69b4;
+        transform-origin: 0 0;
+        white-space: nowrap;
+    }
+    @keyframes spin {
+        from {transform: rotate(0deg);}
+        to {transform: rotate(360deg);}
+    }
+</style>
+</head>
+<body>
+    <div class="heart-container"id="heartContainer"></div>
+<script>
+    const heartContainer = document.getElementById('heartContainer');
+    const words = ["I", "LOVE", "YOU"];
+    const total = 120;
+    const scale = 8; // Heart size
+    const speed = 0.04; // Animation speed
+
+    const N =  2000, pts = [], cum = [0];
+    for (let i = 0; i < N; i++) {
+        const t = i / N * 2 * Math.PI;
+        const x = scale * 16 * Math.pow(Math.sin(t), 3);
+        const y = -scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+        pts.push([x * scale, -y * scale]);
+        if (i > 0) {
+            cum.push(cum[i-1] + Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]));            
+        }
+    }
+    const L = cum[N-1];
+    function pointAt (d){
+        d = ((d % L) + L) % L;
+        let lo = 0, hi = N;
+        while (lo < hi) {
+           const mid = ( lo + hi) >> 1;
+           if (cum[mid] < d) lo = mid; 
+            else hi = mid;
+        }
+        const f = (d - cum[lo]) / (cum[hi] - cum[lo] || 1);
+        return [
+            pts[lo][0] + f * (pts[hi][0] - pts[lo][0]),
+            pts[lo][1] + f * (pts[hi][1] - pts[lo][1])
+        ];
+    }
+    const span = [];
+    for (let i = 0; i < total; i++) {
+        const span = document.createElement('span');
+        span.className = 'word';
+        span.textContent = words[i % words.length];
+        heartContainer.appendChild(span);   
+        span.push(span);
+    }
+    function animate(time) {
+        const offset = (time / 1000) * speed * L;
+        for (let i = 0; i < total; i++) {
+            const [x, y] = pointAt((i / total) * L + offset); 
+            span[i].style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        }
+        requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+</script>
+</body>
+</html> 

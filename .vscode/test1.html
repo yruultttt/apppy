@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {
+        background-color: lightblue;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }  
+    .heart {
+        width: 100px;
+        height: 90px;
+        background-color: red;
+        position: relative;
+        transform: rotate(-45deg);
+        animation: beat 1s infinite;
+    }
+    .heart::before,
+    .heart::after {
+        content: "";
+        width: 100px;
+        height: 90px;
+        background-color: red;
+        border-radius: 50%;
+        position: absolute;
+    }   
+    .heart::before {
+        top: -50px;
+        left: 0;
+    }
+    .heart::after {
+        top: 0;
+        left: 50px;
+    }   
+    @keyframes beat {
+        0%, 100% {
+            transform: scale(1) rotate(-45deg);
+        }
+        50% {
+            transform: scale(1.2) rotate(-45deg);
+        }
+    } 
+</style>
+</head>
+<body>
+    <div class="heart"></div>
+</body>
+</html> 
